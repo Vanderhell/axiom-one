@@ -1,0 +1,24 @@
+# Local CMake and compiler output
+/build/
+/build-*/
+/out/
+/cmake-build-*/
+
+# Local design notes not intended for publication
+/spec/
+
+# IDE and editor state
+/.vs/
+/.vscode/
+*.user
+*.suo
+*.VC.db
+*.VC.opendb
+
+# Compiler and test artifacts
+*.obj
+*.o
+*.pdb
+*.ilk
+*.tlog
+Testing/

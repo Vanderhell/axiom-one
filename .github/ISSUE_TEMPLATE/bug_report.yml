@@ -1,0 +1,35 @@
+name: Bug report
+description: Report a reproducible defect in ONE
+title: "bug: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: "Please provide a minimal reproducer and do not disclose security vulnerabilities here."
+  - type: input
+    id: module
+    attributes:
+      label: Affected module or API
+      placeholder: "e.g. ONESLEW / one_slew_i32"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal reproducer
+      description: Include self-contained C code and exact command when possible.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: "OS, compiler and version, architecture, build type"
+    validations:
+      required: true

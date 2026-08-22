@@ -1,0 +1,12 @@
+#include "one/trace.h"
+
+static size_t width(uint8_t b){return (size_t)b/8u;}
+static int valid(const one_trace_t*t){size_t n;return t!=0&&t->buffer!=0&&t->capacity>0u&&(t->step_bits==8u||t->step_bits==16u||t->step_bits==32u)&&one_trace_required_bytes(t->capacity,t->step_bits,&n)==ONETRACE_OK&&t->buffer_size>=n&&t->head<t->capacity&&t->count<=t->capacity;}
+one_trace_status_t one_trace_required_bytes(size_t c,uint8_t b,size_t*out){size_t w;if(out==0)return ONETRACE_ERR_INVALID_ARGUMENT;if(c==0u)return ONETRACE_ERR_INVALID_CAPACITY;if(b!=8u&&b!=16u&&b!=32u)return ONETRACE_ERR_INVALID_STEP_WIDTH;w=width(b);if(c>SIZE_MAX/w)return ONETRACE_ERR_OVERFLOW;*out=c*w;return ONETRACE_OK;}
+one_trace_status_t one_trace_init(one_trace_t*t,void*buf,size_t size,size_t cap,uint8_t b){size_t need;one_trace_status_t st;if(t==0||buf==0)return ONETRACE_ERR_INVALID_ARGUMENT;st=one_trace_required_bytes(cap,b,&need);if(st!=ONETRACE_OK)return st;if(size<need)return ONETRACE_ERR_INVALID_ARGUMENT;t->buffer=buf;t->buffer_size=size;t->capacity=cap;t->head=0u;t->count=0u;t->step_bits=b;return ONETRACE_OK;}
+static void store(one_trace_t*t,size_t i,uint32_t v){size_t o=i*width(t->step_bits);t->buffer[o]=(uint8_t)v;if(t->step_bits>=16u)t->buffer[o+1u]=(uint8_t)(v>>8u);if(t->step_bits==32u){t->buffer[o+2u]=(uint8_t)(v>>16u);t->buffer[o+3u]=(uint8_t)(v>>24u);}}
+static uint32_t load(const one_trace_t*t,size_t i){size_t o=i*width(t->step_bits);uint32_t v=t->buffer[o];if(t->step_bits>=16u)v|=(uint32_t)t->buffer[o+1u]<<8u;if(t->step_bits==32u)v|=(uint32_t)t->buffer[o+2u]<<16u|(uint32_t)t->buffer[o+3u]<<24u;return v;}
+one_trace_status_t one_trace_push(one_trace_t*t,uint32_t s){if(!valid(t))return ONETRACE_ERR_INVALID_ARGUMENT;if((t->step_bits==8u&&s>UINT8_MAX)||(t->step_bits==16u&&s>UINT16_MAX))return ONETRACE_ERR_STEP_OUT_OF_RANGE;store(t,t->head,s);++t->head;if(t->head==t->capacity)t->head=0u;if(t->count<t->capacity)++t->count;return ONETRACE_OK;}
+void one_trace_clear(one_trace_t*t){if(valid(t)){t->head=0u;t->count=0u;}}
+size_t one_trace_count(const one_trace_t*t){return valid(t)?t->count:0u;}
+one_trace_status_t one_trace_get(const one_trace_t*t,size_t i,uint32_t*out){size_t start,slot;if(out==0)return ONETRACE_ERR_INVALID_ARGUMENT;if(!valid(t))return ONETRACE_ERR_INVALID_ARGUMENT;if(i>=t->count)return ONETRACE_ERR_INDEX_OUT_OF_RANGE;start=t->count==t->capacity?t->head:0u;slot=start+i;if(slot>=t->capacity)slot-=t->capacity;*out=load(t,slot);return ONETRACE_OK;}
