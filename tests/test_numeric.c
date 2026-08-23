@@ -1,4 +1,5 @@
 #include "test_assert.h"
+#include <stddef.h>
 #include <stdint.h>
 #include "one/dead.h"
 #include "one/hyst.h"
