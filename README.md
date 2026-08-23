@@ -1,6 +1,6 @@
-# ONE
+# Axiom One
 
-ONE is a small, dependency-free C99 static library of focused embedded-friendly primitives. Each module solves one bounded problem: it owns no heap, has no hidden global mutable state, and exposes a plain C API.
+Axiom One is a small, dependency-free C99 static library of focused embedded-friendly primitives. Its public C API and module family use the `ONE` name (`one_*`, `ONEARB`, `ONESLEW`, and so on). Each module solves one bounded problem: it owns no heap, has no hidden global mutable state, and exposes a plain C API.
 
 ## Highlights
 
@@ -96,4 +96,4 @@ The report records PE executable and `.text` sizes together with linker-map evid
 
 ## License
 
-Copyright © 2026 Vanderhell. ONE is distributed under the [MIT License](LICENSE).
+Copyright © 2026 Vanderhell. Axiom One is distributed under the [MIT License](LICENSE).

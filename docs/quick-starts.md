@@ -1,4 +1,4 @@
-# ONE module quick starts
+# Axiom One module quick starts
 
 Every example is C99 and assumes `#include <one.h>`. State objects belong to the caller and should normally have automatic or application-owned storage.
 

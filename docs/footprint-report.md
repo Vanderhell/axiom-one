@@ -1,4 +1,4 @@
-﻿# ONE static-link footprint report
+﻿# Axiom One static-link footprint report
 
 Configuration: Release
 

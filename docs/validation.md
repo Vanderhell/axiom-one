@@ -1,4 +1,4 @@
-# Validation guide
+# Axiom One validation guide
 
 ## Test philosophy
 

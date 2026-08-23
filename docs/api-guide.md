@@ -1,8 +1,8 @@
-# ONE public API guide
+# Axiom One public API guide
 
 ## General contract
 
-Public declarations live in `include/one/*.h`; `include/one.h` includes all of them. Function names are lowercase `one_*`. All headers can be included from C++ and keep C linkage.
+Public declarations live in `include/one/*.h`; `include/one.h` includes all of them. The public C API and modules retain the `ONE` name, while the project name is Axiom One. Function names are lowercase `one_*`. All headers can be included from C++ and keep C linkage.
 
 Modules either return a typed status enum, a `bool`, or a value whose API has no error condition. A status other than its documented `*_OK` value means output/state must not be assumed to have changed unless the module contract explicitly says otherwise.
 

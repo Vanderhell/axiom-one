@@ -1,6 +1,6 @@
-# Contributing to ONE
+# Contributing to Axiom One
 
-Thank you for improving ONE. Small, reviewable changes are preferred because every module has a deliberately narrow contract.
+Thank you for improving Axiom One. Small, reviewable changes are preferred because every module has a deliberately narrow contract.
 
 ## Before opening an issue
 

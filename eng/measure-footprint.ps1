@@ -64,7 +64,7 @@ if ($null -eq $baseline) { throw "The baseline executable is missing." }
 $rows = $rows | Sort-Object @{ Expression = { if ($_.Target -eq 'one_footprint_baseline') { 0 } else { 1 } } }, Target
 
 $lines = @(
-    '# ONE static-link footprint report',
+    '# Axiom One static-link footprint report',
     '',
     "Configuration: $Configuration",
     '',
