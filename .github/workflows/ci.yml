@@ -6,6 +6,11 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-test:
@@ -17,18 +22,38 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - name: Configure
         run: cmake -S . -B build -D BUILD_TESTING=ON -D CMAKE_BUILD_TYPE=Release
       - name: Build
         run: cmake --build build --config Release --parallel
       - name: Test
         run: ctest --test-dir build -C Release --output-on-failure
+      - name: Analyze memory with MemBrowse
+        if: matrix.os == 'ubuntu-latest'
+        id: analyze
+        continue-on-error: true
+        uses: membrowse/membrowse-action@v1
+        with:
+          elf: build/one_tests
+          target_name: axion-one-linux-release
+          api_key: ${{ secrets.MEMBROWSE_API_KEY }}
+      - name: Post MemBrowse PR comment
+        if: ${{ matrix.os == 'ubuntu-latest' && steps.analyze.outcome == 'success' && github.event_name == 'pull_request' }}
+        uses: membrowse/membrowse-action/comment-action@v1
+        with:
+          json_files: ${{ steps.analyze.outputs.report_path }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   sanitizers:
     name: ubuntu sanitizers
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - name: Configure
         run: cmake -S . -B build-asan -D BUILD_TESTING=ON -D CMAKE_BUILD_TYPE=Debug -D CMAKE_C_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer" -D CMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined"
       - name: Build
